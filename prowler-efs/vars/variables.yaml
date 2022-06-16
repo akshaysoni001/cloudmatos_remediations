@@ -1,0 +1,3 @@
+aws_region: us-east-1
+efs_id: fs-0f6f624b5d4991d4c
+efs_document_file: ./policy/efs_policy_document.json

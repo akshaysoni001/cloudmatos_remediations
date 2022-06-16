@@ -1,0 +1,17 @@
+{
+  "Statement": [
+    {
+      "Sid": "AWSConfigSNSPolicy",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:sns:us-east-1:302275733673:sns.fifo",
+      "Principal": {
+        "AWS": [
+          "302275733673"
+        ]
+      }
+    }
+  ]
+}

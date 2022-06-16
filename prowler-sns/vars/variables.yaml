@@ -1,0 +1,3 @@
+aws_region: us-east-1
+sns_topic: sns.fifo
+sns_document_file: ./policy/sns_policy_document.json
