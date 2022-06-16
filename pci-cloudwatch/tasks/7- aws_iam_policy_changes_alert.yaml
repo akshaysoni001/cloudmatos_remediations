@@ -1,0 +1,34 @@
+- name: Create log metric filter for IAM Policy changes
+  no_log: false
+  community.aws.cloudwatchlogs_log_group_metric_filter:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    filter_name: "iam_policy_changes_filter_{{aws_account_id}}"
+    filter_pattern: '{($.eventName=DeleteGroupPolicy)||($.eventName=DeleteRolePolicy)||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}'
+    log_group_name: "{{ log_group_name }}"
+    region: "{{aws_region}}"
+    metric_transformation:
+      metric_name: "iam_policy_changes_metric_{{aws_account_id}}"
+      metric_namespace: "IamPolicyChanges"
+      metric_value: "1"
+    state: present
+  register: metric_filter_resp
+  when: iam_policy_changes_metric_filter_alarm_exists is defined and iam_policy_changes_metric_filter_alarm_exists == "False"
+
+- name: create alarm for IAM Policy changes
+  no_log: false
+  community.aws.ec2_metric_alarm:
+    state: present
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{aws_region}}"
+    name: "iam_policy_changes_metric_filter_alarm_{{aws_account_id}}"
+    metric: "iam_policy_changes_metric_{{aws_account_id}}"
+    namespace: "IamPolicyChanges"
+    statistic: Sum
+    comparison: "GreaterThanOrEqualToThreshold"
+    threshold: "1"
+    period: "300"
+    evaluation_periods: "1"
+    description: "This alarm is triggered when IAM policy changes."
+  when: iam_policy_changes_metric_filter_alarm_exists is defined and iam_policy_changes_metric_filter_alarm_exists == "False"

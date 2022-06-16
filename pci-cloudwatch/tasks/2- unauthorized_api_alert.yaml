@@ -1,0 +1,34 @@
+- name: Create log metric filter for unauthorized_api_call
+  no_log: false
+  community.aws.cloudwatchlogs_log_group_metric_filter:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    filter_name: "unauthorized_api_filter_{{aws_account_id}}"
+    filter_pattern: '{ ($.errorCode = "*UnauthorizedOperation") || ($.errorCode = "AccessDenied*") }'
+    log_group_name: "{{ log_group_name }}"
+    region: "{{aws_region}}"
+    metric_transformation:
+      metric_name: "unauthorized_api_metric_{{aws_account_id}}"
+      metric_namespace: "UnauthorizedFailures"
+      metric_value: "1"
+    state: present
+  register: metric_filter_resp
+  when: unauthorized_api_metric_filter_alarm_exists is defined and unauthorized_api_metric_filter_alarm_exists == "False"
+
+- name: create alarm for unauthorized_api_call
+  no_log: false
+  community.aws.ec2_metric_alarm:
+    state: present
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{aws_region}}"
+    name: "unauthorized_api_metric_filter_alarm_{{aws_account_id}}"
+    metric: "unauthorized_api_metric_{{aws_account_id}}"
+    namespace: "UnauthorizedFailures"
+    statistic: Sum
+    comparison: "GreaterThanOrEqualToThreshold"
+    threshold: "1"
+    period: "300"
+    evaluation_periods: "1"
+    description: "This alarm is triggered when unauthorized API calls made."
+  when: unauthorized_api_metric_filter_alarm_exists is defined and unauthorized_api_metric_filter_alarm_exists == "False"

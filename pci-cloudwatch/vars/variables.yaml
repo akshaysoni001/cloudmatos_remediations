@@ -1,0 +1,22 @@
+# Pre Configured, Not required to change
+log_group_name: "management_event_log_group_{{aws_account_id}}"
+policy_name: "management_event_trail_lg_policy_{{aws_account_id}}"
+role_name: "management_event_trail_lg_role_{{aws_account_id}}"
+policy_document_file: "./policy/policy_document.json"
+assume_policy_document_file : "./policy/assume_policy_document.json"
+bucket_policy_file: "./policy/bucket_policy.json"
+s3_bucket_name: "management-event-trail-bucket-{{aws_account_id}}"
+trail_name: "management_event_trail_{{aws_account_id}}"
+
+# Need To configure
+aws_region: us-east-1
+unauthorized_api_metric_filter_alarm_exists: "False"
+config_configuration_changes_metric_filter_alarm_exists: "False"
+aws_organization_changes_filter_exists: "False"
+cloudtrail_configuration_changes_metric_filter_alarm_exists: "False"
+delete_kms_activity_metric_filter_alarm_exists: "False"
+iam_policy_changes_metric_filter_alarm_exists: "False"
+console_sign_failure_metric_filter_alarm_exists: "False"
+root_account_signin_usage_metric_filter_alarm_exists: "False"
+s3_bucket_policy_change_metric_filter_alarm_exists: "False"
+signin_without_mfa_metric_filter_alarm_exists: "False"

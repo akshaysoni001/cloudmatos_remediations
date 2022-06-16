@@ -1,0 +1,34 @@
+- name: Create log metric filter for organization change call
+  no_log: false
+  community.aws.cloudwatchlogs_log_group_metric_filter:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    filter_name: "aws_organization_changes_filter_{{aws_account_id}}"
+    filter_pattern: '{ ($.eventSource = organizations.amazonaws.com) && (($.eventName = "AcceptHandshake") || ($.eventName = "AttachPolicy") || ($.eventName = "CreateAccount") || ($.eventName = "CreateOrganizationalUnit") || ($.eventName = "CreatePolicy") || ($.eventName = "DeclineHandshake") || ($.eventName = "DeleteOrganization") || ($.eventName = "DeleteOrganizationalUnit") || ($.eventName = "DeletePolicy") || ($.eventName = "DetachPolicy") || ($.eventName = "DisablePolicyType") || ($.eventName = "EnablePolicyType") || ($.eventName = "InviteAccountToOrganization") || ($.eventName = "LeaveOrganization") || ($.eventName = "MoveAccount") || ($.eventName = "RemoveAccountFromOrganization") || ($.eventName = "UpdatePolicy") || ($.eventName = "UpdateOrganizationalUnit")) }'
+    log_group_name: "{{ log_group_name }}"
+    region: "{{aws_region}}"
+    metric_transformation:
+      metric_name: "aws_organization_changes_metric_{{aws_account_id}}"
+      metric_namespace: "AwsOrganizationActivity"
+      metric_value: "1"
+    state: present
+  register: metric_filter_resp
+  when: aws_organization_changes_filter_exists is defined and aws_organization_changes_filter_exists == "False"
+
+- name: create alarm organization change call
+  no_log: false
+  community.aws.ec2_metric_alarm:
+    state: present
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{aws_region}}"
+    name: "aws_organization_changes_filter_{{aws_account_id}}"
+    metric: "aws_organization_changes_metric_{{aws_account_id}}"
+    namespace: "This alarm is triggered when there is Console sign-in without MFA."
+    statistic: Sum
+    comparison: "GreaterThanOrEqualToThreshold"
+    threshold: "1"
+    period: "300"
+    evaluation_periods: "1"
+    description: "This alarm is triggered when Config configuration changes."
+  when: aws_organization_changes_filter_exists is defined and aws_organization_changes_filter_exists == "False"

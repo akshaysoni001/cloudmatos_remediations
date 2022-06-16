@@ -1,0 +1,2 @@
+aws_region: us-east-1
+acm_document_file: ./policy/acm_policy_document.json

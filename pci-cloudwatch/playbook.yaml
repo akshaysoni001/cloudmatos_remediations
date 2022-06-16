@@ -1,0 +1,40 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_account_id is defined
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Import static var data
+      include_vars:
+        dir: vars
+        ignore_unknown_extensions: True
+        extensions:
+          - yaml 
+    
+    - name: .- Create Metric Filter & Alarms
+      include_tasks: "{{ item }}"
+      loop:
+        - ./tasks/1- configure_role_policy_group_and_logs.yaml
+        - ./tasks/2- unauthorized_api_alert.yaml
+        - ./tasks/3- aws_config_configuration_change_alert.yaml
+        - ./tasks/4- aws_organization_change_alert.yaml
+        - ./tasks/5- aws_cloudtrail_configuration_change_alert.yaml
+        - ./tasks/6- disable_delete_kms_key_alert.yaml
+        - ./tasks/7- aws_iam_policy_changes_alert.yaml
+        - ./tasks/8- management_console_auth_failure_alert.yaml
+        - ./tasks/9- root_account_usage_alert.yaml
+        - ./tasks/10- aws_s3_bucket_policy_change_alert.yaml
+        - ./tasks/11- aws_sign_in_without_mfa_alert.yaml
+   
