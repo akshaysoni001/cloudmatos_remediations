@@ -21,8 +21,11 @@
         ignore_unknown_extensions: True
         extensions:
           - yaml 
-
-    - name: Prowler -  Check if ACM Certificates are about to expire in 7 days or less
+    
+    - name: Prowler - Check if any of the Elastic or Public IP are in Shodan (requires Shodan API KEY) -remediation
       include_tasks: "{{ item }}"
       loop:
-        - ./tasks/1-acm_certificate_validation_check.yaml
+        - ./tasks/1- create_pre_required_resources.yaml
+        - ./tasks/2- change_ec2_public_ip_to_private_ip.yaml
+        - ./tasks/3- destroy_resources_created_initially.yaml
+   
