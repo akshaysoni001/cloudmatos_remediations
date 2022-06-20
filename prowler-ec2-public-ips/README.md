@@ -1,12 +1,12 @@
 # Introduction
 
-Remediate Prowler SNS specific compliance using Ansible Playbook
+Remediate Prowler Public Ips specific compliance using Ansible Playbook
 
 # Features
 
 The main playbook is defined in ./playbook.yaml which essentially calls the different remediation tasks in ./tasks/* folder. Currently, the following remediation's are supported:
 
- * [Prowler.1/2] Check if SNS topics have policy set as Public
+ * [Prowler.1] Check if any of the Elastic or Public IP are in Shodan (requires Shodan API KEY) - ec2 [High]
 
 
 # Usage
@@ -16,8 +16,14 @@ The main playbook is defined in ./playbook.yaml which essentially calls the diff
 
 Manually update ./vars/variables.yaml.
     aws_region: <aws_region>
-    sns_topic:  <sns_topic_name>
+    instance_id:  <instance_id>
+    subnet_id: <subnet_id>
 
-Run playbook
-    ansible-playbook playbook.yaml --extra-vars '{"aws_account_id":"<aws_account_id>", "aws_access_key":"<aws_access_key>","aws_secret_key":"<aws_secret_key>"}'
+Run playbooks:
+1. First Run Playbook get_public_instance_ids_playbook.yaml to get list of public ips, Then it required human intervention to check whihc ips should be private.
+    Command: ansible-playbook get_public_instance_ids_playbook.yaml --extra-vars '{"aws_access_key":"<aws_access_key>","aws_secret_key":"<aws_secret_key>"}'
+    After finding instances, Then define instance_id & subnet_id in variable.yaml.
+    Then Execute below command to make them from public to private. 
+    
+2. ansible-playbook playbook.yaml --extra-vars '{"aws_access_key":"<aws_access_key>","aws_secret_key":"<aws_secret_key>"}'
 
