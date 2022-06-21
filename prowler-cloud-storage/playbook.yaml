@@ -23,7 +23,7 @@
         extensions:
           - yaml 
     
-    - name: PCI - Glue (S3 Encryption)
+    - name: Prowler - Glue (S3 Encryption)
       include_tasks: "{{ item }}"
       loop:
         - ./tasks/1- enable_s3_encryption.yaml
