@@ -1,0 +1,14 @@
+{
+  "S3Encryption": [
+    {
+      "S3EncryptionMode": "SSE-KMS",
+      "KmsKeyArn": "arn:aws:kms:{{aws_region}}:{{aws_account_id}}:key/{{kms_key}}"
+    }
+  ],
+  "CloudWatchEncryption": {
+    "CloudWatchEncryptionMode": "DISABLED"
+  },
+  "JobBookmarksEncryption": {
+    "JobBookmarksEncryptionMode": "DISABLED"
+  }
+}

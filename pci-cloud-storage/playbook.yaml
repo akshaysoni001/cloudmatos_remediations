@@ -22,13 +22,9 @@
         ignore_unknown_extensions: True
         extensions:
           - yaml 
-
-    - name: PCI -  API Gateway
+    
+    - name: PCI - Glue (S3 Encryption)
       include_tasks: "{{ item }}"
       loop:
-#        - ./tasks/0- configure_role_policy_group_and_logs.yaml
-#        - ./tasks/1-genrate_client_certificate.yaml
-#        - ./tasks/2-assign_certificate_to_api.yaml
-#        - ./tasks/3-enable_api_logging.yaml
-#        - ./tasks/4-enable_x_ray_tracing.yaml
-#        - ./tasks/4-api_gateway_associate_with_aws_waf_acl.yaml
+        - ./tasks/1- enable_s3_encryption.yaml
+   
