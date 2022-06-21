@@ -1,0 +1,19 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AWSAPIGatewayCreateLogStream",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+                "logs:GetLogEvents",
+                "logs:FilterLogEvents"
+            ],
+            "Resource": "arn:aws:logs:us-east-1:302275733673:log-group:api_gateway_log_group_302275733673:log-stream:302275733673_ApiGateway_us-east-1*"
+        }
+    ]
+}

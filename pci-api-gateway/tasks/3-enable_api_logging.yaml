@@ -1,0 +1,8 @@
+- name: Enable Logging For REST APIs
+  shell: >
+    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigatewayv2 update-stage --api-id {{api_id}} \
+                                                                                            --stage-name '{{stage_name}}' \
+                                                                                            --access-log-settings '{"DestinationArn": "arn:aws:logs:{{aws_region}}:{{aws_account_id}}:log-group:{{log_group_name}}", "Format": "$context.identity.sourceIp,$context.requestTime,$context.httpMethod,$context.routeKey,$context.protocol,$context.status,$context.responseLength,$context.requestId"}'  --region "{{aws_region}}"
+  register: enable_logging
+  failed_when: enable_logging.stderr_lines
+- debug: var=enable_logging

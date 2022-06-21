@@ -1,0 +1,16 @@
+- name: Get Swagger File
+  shell: >
+    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigateway get-export --parameters extensions='apigateway' --rest-api-id {{api_id}} --stage-name {{stage_name}} --export-type swagger ./files/swagger.json --region "{{aws_region}}"
+  register: swagger_file
+  failed_when: swagger_file.stderr_lines
+- debug: var=swagger_file
+
+
+- name: Enable X-Tray Tracing
+  community.aws.aws_api_gateway:
+    api_id: "{{api_id}}"
+    region: "{{aws_region}}"
+    stage: "{{stage_name}}"
+    swagger_file: "./files/swagger.json"
+    tracing_enabled: true
+    state: present

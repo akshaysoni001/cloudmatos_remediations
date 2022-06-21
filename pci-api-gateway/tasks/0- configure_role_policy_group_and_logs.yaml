@@ -1,0 +1,45 @@
+- name: Api Gateway log group role
+  template:
+    src: ./policy_document.j2
+    dest: "{{policy_document_file}}"
+
+- name: Create API Gateway log group
+  no_log: false
+  community.aws.cloudwatchlogs_log_group:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{aws_region}}"
+    log_group_name: "{{log_group_name}}"
+    state: present
+  register: log_group_resp
+
+- name: Create API Gateway log group role
+  no_log: false
+  community.aws.iam_managed_policy:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    policy_name: "{{policy_name}}"
+    policy_description: "To API Gateway to push logs to cloudwatch"
+    policy: "{{ lookup('file', policy_document_file) }}"
+    state: present
+  register: policy_resp
+
+- name: Create API Gateway role
+  no_log: false
+  community.aws.iam_role:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    name: "{{role_name}}"
+    assume_role_policy_document: "{{lookup('file',assume_policy_document_file)}}"
+    managed_policies:
+      - "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+    state: present
+  register: role_resp
+
+
+- name: Assign CloudWatch Arn to api gateway
+  shell: >
+    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigateway update-account --patch-operations op='replace',path='/cloudwatchRoleArn',value='{{role_resp.arn}}'
+  register: cloudwatch_arn_api_gateway
+  failed_when: cloudwatch_arn_api_gateway.stderr_lines
+- debug: var=cloudwatch_arn_api_gateway

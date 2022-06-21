@@ -1,0 +1,29 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents",
+                "logs:FilterLogEvents"
+            ],
+            "Resource": "arn:aws:logs:{{aws_region}}:{{aws_account_id}}:log-group:{{log_group_name}}"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogDelivery",
+                "logs:PutResourcePolicy",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:CreateLogGroup",
+                "logs:DescribeResourcePolicies",
+                "logs:GetLogDelivery",
+                "logs:ListLogDeliveries"
+            ],
+            "Resource": "*"
+        }
+    ]
+}

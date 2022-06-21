@@ -1,0 +1,8 @@
+- name: Associate API Gateway with WAF &
+  shell: >
+    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws waf-regional associate-web-acl \
+                                                                                        --web-acl-id '{{web_acl_id}}' \
+                                                                                        --resource-arn 'arn:aws:apigateway:{{aws_region}}::/restapis/{{api_id}}/stages/{{stage_name}}'  --region "{{aws_region}}"
+  register: associate_waf_acl
+  failed_when: associate_waf_acl.stderr_lines
+- debug: var=associate_waf_acl

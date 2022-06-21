@@ -1,0 +1,34 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_account_id is defined
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Import static var data
+      include_vars:
+        dir: vars
+        ignore_unknown_extensions: True
+        extensions:
+          - yaml 
+
+    - name: PCI -  API Gateway
+      include_tasks: "{{ item }}"
+      loop:
+#        - ./tasks/0- configure_role_policy_group_and_logs.yaml
+#        - ./tasks/1-genrate_client_certificate.yaml
+        - ./tasks/2-assign_certificate_to_api.yaml
+#        - ./tasks/3-enable_api_logging.yaml
+        - ./tasks/4-enable_x_ray_tracing.yaml
+#        - ./tasks/4-api_gateway_associate_with_aws_waf_acl.yaml
