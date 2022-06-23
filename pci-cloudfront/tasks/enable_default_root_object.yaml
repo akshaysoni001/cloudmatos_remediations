@@ -1,0 +1,5 @@
+- name: Enable Default Root Object
+  community.aws.cloudfront_distribution:
+    state: present
+    distribution_id: "{{distribution_id}}"
+    default_root_object : "{{root_object_file_name}}"

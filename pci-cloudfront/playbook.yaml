@@ -22,12 +22,12 @@
         ignore_unknown_extensions: True
         extensions:
           - yaml 
-
-    - name: PCI -  API Gateway
+    
+    - name: .- PCI - CloudFront
       include_tasks: "{{ item }}"
       loop:
-        - ./tasks/0- configure_role_policy_group_and_logs.yaml
-        - ./tasks/2-assign_certificate_to_api.yaml
-        - ./tasks/3-enable_api_logging.yaml
-        - ./tasks/4-enable_x_ray_tracing.yaml
-#        - ./tasks/4-api_gateway_associate_with_aws_waf_acl.yaml
+        - ./tasks/enable_default_root_object.yaml
+        - ./tasks/enable_encryption_in_transit.yaml
+        - ./tasks/enable_logging.yaml
+#        - ./tasks/enable_origin_access_identity.yaml
+   

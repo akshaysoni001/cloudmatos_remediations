@@ -1,11 +1,13 @@
-- name: Create Security Configuration
+- name: Create Security Configuration Policy
   template:
     src: ./s3_encryption.j2
     dest: "{{s3_encryption_file}}"
 
+#
 - name: Enable S3 Encryption For Glue Development Endpoints & ETL Jobs
   shell: >
-    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws glue create-security-configuration --region us-east-1	--name cc-s3-encrypted-sec-config --encryption-configuration file://policy/s3_encryption.json --region {{ aws_region }}
-  register: s3_encryption
-  failed_when: s3_encryption.failed
-- debug: var=s3_encryption.stdout
+    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws glue create-security-configuration --region us-east-1	--name {{sec_config_name}} --encryption-configuration file://{{s3_encryption_file}} --region {{ aws_region }}
+  register: security_configuration
+  when: security_configuration_exists is defined and security_configuration_exists == "False"
+  failed_when: security_configuration.failed
+- debug: var=security_configuration.stdout

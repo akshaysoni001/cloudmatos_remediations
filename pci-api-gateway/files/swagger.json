@@ -2,10 +2,10 @@
   "swagger" : "2.0",
   "info" : {
     "description" : "Your first API with Amazon API Gateway. This is a sample API that integrates via HTTP with our demo Pet Store endpoints",
-    "version" : "2022-06-20T06:33:04Z",
+    "version" : "2022-06-20T14:22:14Z",
     "title" : "PetStore"
   },
-  "host" : "pab4j6vz71.execute-api.us-east-1.amazonaws.com",
+  "host" : "mra50zw94k.execute-api.us-east-1.amazonaws.com",
   "basePath" : "/prod",
   "schemes" : [ "https" ],
   "paths" : {
