@@ -1,9 +1,0 @@
-- name: Enable Logging
-  community.aws.cloudfront_distribution:
-    state: present
-    distribution_id: "{{distribution_id}}"
-    logging:
-      enabled: true
-      include_cookies: false
-      bucket: {{ logging_s3_bucket_name }}.s3.amazonaws.com
-      prefix: cloudfront/

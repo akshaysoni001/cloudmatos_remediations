@@ -1,6 +1,0 @@
-- name: Enable Encryption in transit
-  community.aws.cloudfront_distribution:
-    state: present
-    distribution_id: "{{distribution_id}}"
-    default_cache_behavior:
-      viewer_protocol_policy: "redirect-to-https"

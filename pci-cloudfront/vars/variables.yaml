@@ -1,5 +1,0 @@
-# Need To configure
-aws_region: us-east-1
-distribution_id: E299LBKFG9SX1H
-logging_s3_bucket_name: akshay-test-bucket-logging
-root_object_file_name: "index.html"

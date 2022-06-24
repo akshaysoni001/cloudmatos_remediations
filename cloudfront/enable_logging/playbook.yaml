@@ -1,0 +1,32 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+        - aws_access_key is defined
+        - aws_secret_key is defined
+        - region is defined
+        - distribution_id is defined
+        - logging_s3_bucket_name is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Enable Logging
+      community.aws.cloudfront_distribution:
+        state: present
+        distribution_id: "{{distribution_id}}"
+        logging:
+          enabled: true
+          include_cookies: false
+          bucket: { { logging_s3_bucket_name } }.s3.amazonaws.com
+          prefix: cloudfront/
+   
