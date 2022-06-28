@@ -1,6 +1,0 @@
-- name: Disable EFS Public access
-  shell: >
-    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws efs put-file-system-policy --file-system-id {{efs_id}} --policy '{{lookup('file',efs_document_file)}}'
-  register: efs_disable_public
-  failed_when: efs_disable_public.stderr
-- debug: var=efs_disable_public

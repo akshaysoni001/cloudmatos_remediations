@@ -1,0 +1,49 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+        - aws_access_key is defined
+        - aws_secret_key is defined
+        - region is defined
+        - vpc_id is defined
+        - security_group_name is defined
+        - security_group_description is defined
+        - security_group_id is defined
+        - from_port is defined
+        - to_port is defined
+        - cidr_range is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: No Security Groups without ingress filtering being used
+      ec2_group:
+        name: "{{security_group_name}}"
+        group_id: "{{security_group_id}}"
+        description: "{{ security_group_description }}"
+        vpc_id: "{{vpc_id}}"
+        region: "{{region}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        aws_access_key: "{{aws_access_key}}"
+        rules:
+          - proto: tcp
+            group_id: "{{security_group_id}}"
+            from_port: "{{from_port}}"
+            to_port: "{{to_port}}"
+            cidr_ip: "{{cidr_range}}"
+        rules_egress:
+          - proto: tcp
+            from_port: "{{from_port}}"
+            to_port: "{{to_port}}"
+            cidr_ip: "{{cidr_range}}"
+            group_name: "{{security_group_name}}"
+      register: sg_ingress_logfile_validation

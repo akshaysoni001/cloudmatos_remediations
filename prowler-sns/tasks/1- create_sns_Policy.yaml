@@ -1,4 +1,0 @@
-- name: Create SNS Public policy
-  template:
-      src: ./sns_policy_document.j2
-      dest: "{{sns_document_file}}"

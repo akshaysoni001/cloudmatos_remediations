@@ -1,6 +1,0 @@
-- name: Assign Client Certificate to API
-  shell: >
-    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigateway update-stage --rest-api-id {{api_id}} --stage-name "{{stage_name}}" --patch-operations '[{"op":"replace","path":"/clientCertificateId","value":"{{certificate_id}}"}]'  --region "{{aws_region}}"
-  register: assign_certificate
-  failed_when: assign_certificate.stderr_lines
-- debug: var=assign_certificate

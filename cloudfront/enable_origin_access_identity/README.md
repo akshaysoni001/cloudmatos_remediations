@@ -1,5 +1,5 @@
-# Remediation - Enable Encryption In Transit (CloudFront)
-This control checks whether an Amazon CloudFront distribution requires viewers to use HTTPS directly or whether it uses redirection. The control fails if ViewerProtocolPolicy is set to allow-all for defaultCacheBehavior or for cacheBehaviors.
+# Remediation - Enable Logging in CloudFront
+CloudFront to create log files that contain detailed information about every user request that CloudFront receives
 
 > Remediation Tool   - [Ansible](https://www.ansible.com/)
 
@@ -24,12 +24,14 @@ ansible-galaxy collection install community.aws
 
 ## Remediation Parameters
 
-| Parameter       | Comments              |
-|-----------------|-----------------------|
-| aws_access_key  | AWS Access key        |
-| aws_secret_key  | AWS Secret key        |
+| Parameter       | Comments                   |
+|-----------------|----------------------------|
+| aws_access_key  | AWS Access key             |
+| aws_secret_key  | AWS Secret key             |
+| region          | Region Name                |
 | distribution_id | CloudFront Distribution ID |
-| region          |Region Name            |
+| logging_s3_bucket_name          | S3 Logging Bucket Name     |
+
 
 
 ## Remediation Execution
@@ -40,5 +42,6 @@ ansible-playbook playbook.yml --extra-vars '{
   "aws_secret_key": "xxxx",
   "region": "us-east-2",
   "distribution_id": "xxx",
+  "logging_s3_bucket_name": "xxx"
 }'
 ```

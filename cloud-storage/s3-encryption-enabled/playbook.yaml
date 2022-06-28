@@ -1,0 +1,44 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  vars:
+    s3_encryption_file: "./policy/s3_encryption.json"
+    sec_config_name: "s3_encrypted_sec_config"
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_account_id is defined
+          - aws_region is defined
+          - kms_key is defined
+          - s3_encryption_file is defined
+          - security_configuration_exists is defined
+          - sec_config_name is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Create Security Configuration Policy
+      template:
+        src: ./s3_encryption.j2
+        dest: "{{s3_encryption_file}}"
+
+    #
+    - name: Enable S3 Encryption For Glue Development Endpoints & ETL Jobs
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws glue create-security-configuration --region us-east-1	--name {{sec_config_name}} --encryption-configuration file://{{s3_encryption_file}} --region {{ aws_region }}
+      register: security_configuration
+      when: security_configuration_exists is defined and security_configuration_exists == "False"
+      failed_when: security_configuration.failed
+    - debug: var=security_configuration.stdout
+
+   

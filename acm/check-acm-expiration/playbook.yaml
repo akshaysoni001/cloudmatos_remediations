@@ -1,0 +1,30 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  vars:
+    acm_document_file: ./policy/acm_policy_document.json
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+        - aws_access_key is defined
+        - aws_secret_key is defined
+        - region is defined
+        - acm_document_file is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: ACM Certificate Expiration Check Config Rule
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws configservice put-config-rule --config-rule '{{lookup('file',acm_document_file)}}'  --region "{{region}}"
+      register: acm_certificate_expiration_check
+      failed_when: acm_certificate_expiration_check.stderr_lines
+    - debug: var=acm_certificate_expiration_check

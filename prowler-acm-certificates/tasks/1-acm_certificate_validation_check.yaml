@@ -1,6 +1,0 @@
-- name: ACM Certificate Expiration Check Config Rule
-  shell: >
-    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws configservice put-config-rule --config-rule '{{lookup('file',acm_document_file)}}'  --region "{{aws_region}}"
-  register: acm_certificate_expiration_check
-  failed_when: acm_certificate_expiration_check.stderr_lines
-- debug: var=acm_certificate_expiration_check

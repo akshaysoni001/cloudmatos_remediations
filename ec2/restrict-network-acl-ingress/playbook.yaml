@@ -10,7 +10,8 @@
         - aws_access_key is defined
         - aws_secret_key is defined
         - region is defined
-        - distribution_id is defined
+        - vpc_id is defined
+        - nacl_id is defined
 
   tasks:
     - name: Check ansible version
@@ -19,10 +20,11 @@
       fail:
         msg: Please use Ansible 2.8 or newer
 
-    - name: Enable Encryption in transit
-      community.aws.cloudfront_distribution:
+    - name: Restrict Network ACL Ingress from 0.0.0./0 to all ports
+      ec2_vpc_nacl:
+        nacl_id: " {{ nacl_id }}"
+        vpc_id: "{ { vpc_id } }"
         state: present
-        distribution_id: "{{distribution_id}}"
-        default_cache_behavior:
-          viewer_protocol_policy: "https-only"
+        ingress:
+          - [100, 'all', 'deny', '0.0.0.0/0', null, null,80,80]
    

@@ -1,5 +1,6 @@
-# Remediation - Enable Encryption In Transit (CloudFront)
-This control checks whether an Amazon CloudFront distribution requires viewers to use HTTPS directly or whether it uses redirection. The control fails if ViewerProtocolPolicy is set to allow-all for defaultCacheBehavior or for cacheBehaviors.
+# Remediation - Ensure no Network ACLs allow ingress from 0.0.0.0/0 to any port - ec2
+The Network Access Control List (NACL) function provide stateless filtering of ingress and egress network traffic to AWS resources. It is recommended that no NACL allows unrestricted ingress access to remote server administration ports, such as SSH to port 22 and RDP to port 3389.
+
 
 > Remediation Tool   - [Ansible](https://www.ansible.com/)
 
@@ -24,12 +25,13 @@ ansible-galaxy collection install community.aws
 
 ## Remediation Parameters
 
-| Parameter       | Comments              |
-|-----------------|-----------------------|
-| aws_access_key  | AWS Access key        |
-| aws_secret_key  | AWS Secret key        |
-| distribution_id | CloudFront Distribution ID |
-| region          |Region Name            |
+| Parameter      | Comments       |
+|----------------|----------------|
+| aws_access_key | AWS Access key |
+| aws_secret_key | AWS Secret key |
+| region         | Region Name    |
+| nacl_id        | Network ACL Id |
+| vpc_id         | VPC Id         |
 
 
 ## Remediation Execution
@@ -38,7 +40,8 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "region": "us-east-2",
-  "distribution_id": "xxx",
+  "region": "us-east-1",
+  "vpc_id": "xxx",
+  "nacl_id": "xxx"
 }'
 ```

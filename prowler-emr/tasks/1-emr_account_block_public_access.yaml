@@ -1,6 +1,0 @@
-- name: Block EMR Public Access
-  shell: >
-    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws emr put-block-public-access-configuration --block-public-access-configuration BlockPublicSecurityGroupRules=true --region {{ aws_region }}
-  register: emr_public_access
-  failed_when: emr_public_access.stderr_lines
-- debug: var=emr_public_access

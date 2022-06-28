@@ -1,0 +1,29 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - dax_cluster_name is defined
+          - node_type is defined
+          - iam_arn is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Encrypt DAX Cluster
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws dax create-cluster --cluster-name {{dax_cluster_name}} --node-type {{node_type}} --replication-factor 3 --iam-role-arn {{iam_arn}} --sse-specification Enabled=true --region "{{region}}"
+      register: dax_cluster
+      failed_when: dax_cluster.stderr
+    - debug: var=dax_cluster
+   

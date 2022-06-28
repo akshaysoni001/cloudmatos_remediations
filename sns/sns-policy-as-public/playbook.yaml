@@ -1,0 +1,39 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  vars:
+    sns_document_file: ./policy/sns_policy_document.json
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+        - aws_access_key is defined
+        - aws_secret_key is defined
+        - region is defined
+        - sns_document_file is defined
+        - sns_topic is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Create SNS Public policy
+      template:
+        src: ./sns_policy_document.j2
+        dest: "{{sns_document_file}}"
+
+    - name: Ensure sns topic are publicly accessible
+      community.aws.sns_topic:
+        name: "{{sns_topic}}"
+        state: present
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+        region: "{{region}}"
+        display_name: "SNS Public Policy"
+        policy: "{{ lookup('file', sns_document_file) }}"

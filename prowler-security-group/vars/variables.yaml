@@ -1,8 +1,0 @@
-aws_region: us-east-1
-vpc_id: vpc-0b2976133e5456967
-security_group_name: sg_ingree_rule_check
-security_group_description: Test sg ingres rules
-security_group_id: sg-068e0c6d38218d35f
-from_port: 80
-to_port: 443
-cidr_range: 0.0.0.0/0

@@ -1,5 +1,0 @@
-aws_region: us-east-1
-kms_key: a8ee76bf-a917-49b6-913d-31e64a4018ef
-s3_encryption_file: "./policy/s3_encryption.json"
-security_configuration_exists: "False"
-sec_config_name: "s3_encrypted_sec_config"
