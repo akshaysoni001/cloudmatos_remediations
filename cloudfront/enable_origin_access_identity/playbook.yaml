@@ -19,33 +19,12 @@
       fail:
         msg: Please use Ansible 2.8 or newer
 
-    - name: Fetch CloudFront distributions Configuration
-      shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws cloudfront get-distribution-config --id {{distribution_id}} --query 'DistributionConfig' --region {{ region }}
-      register: cf_configuration
-      failed_when: cf_configuration.failed
-#      - debug: var=security_configuration.stdout
-
-
-    - name: Read file directly into fact
-      ansible.builtin.set_fact:
-        jsondata: "{{ cf_configuration.stdout }}"
-
-    - name: Update the fact
-      ansible.utils.update_fact:
-        updates:
-          - path: jsondata.Origins.Items[0].S3OriginConfig.OriginAccessIdentity
-            value: origin-access-identity/cloudfront/E3NF10TCHZ8AI2
-      register: new_json
-
-    - name: Get Etag For CloudFront Distribution
-      shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws cloudfront get-distribution-config --id {{distribution_id}} --query 'ETag'
-      register: ETag
-
-    - name: Update/Enable Cloudfront distribution config
-      shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws cloudfront update-distribution --id {{distribution_id}} --distribution-config file://x.json --if-match {{ETag.stdout}}
-      register: update_distribution
-      failed_when: update_distribution.failed
-#      - debug: var=update_distribution.stdout
+    - name: Enable S3 Origin Access Identity
+      community.aws.cloudfront_distribution:
+        state: present
+        caller_reference: 1f62eb28-d419-4630-9bd3-531b2789f20b
+        origins:
+          - id: E299LBKFG9SX1H
+            s3_origin_access_identity_enabled: yes
+#            s3_origin_config:
+#              origin_access_identity: origin-access-identity/cloudfront/E2C9XFNC92RLDS

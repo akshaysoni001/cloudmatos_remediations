@@ -15,7 +15,7 @@
                     "Quantity": 0
                 },
                 "S3OriginConfig": {
-                    "OriginAccessIdentity": "access-identity.clopudfrontorigintestakshay.s3.us-east-1.amazonaws.com"
+                    "OriginAccessIdentity": "origin-access-identity/cloudfront/E2C9XFNC92RLDS"
                 },
                 "ConnectionAttempts": 3,
                 "ConnectionTimeout": 10

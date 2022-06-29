@@ -35,6 +35,21 @@ ansible-galaxy collection install community.aws
 | iam_arn        | IAM Role for Cluster |
 
 
+# Create Prerequistic
+## To create IAM Role for DAX Cluster
+-   step 1. Go to IAM Console and select ROLES
+-   step 2. click on create role
+-   step 3. select Trusted entity type as AWS_SERVICE
+-   step 4. In Use case, type Dynamodb
+-   step 5. select DynamoDB Accelerator (DAX) - Cluster management and click next
+-   step 6. DAXServiceRolePolicy is showing their as policy, click next.
+-   step 7. verify detail and click on create role.
+-   step 8. search created role in ROLES and copy arn from that and put it as iam_arn in ansible command.
+
+
+# Node Types
+-   Find the supported node type of dax cluster and select according to requirement and pass its type to command.
+
 ## Remediation Execution
 Following command need to execute
 ```sh
