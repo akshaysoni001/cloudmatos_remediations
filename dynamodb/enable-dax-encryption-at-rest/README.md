@@ -29,7 +29,7 @@ ansible-galaxy collection install community.aws
 |----------------|----------------------|
 | aws_access_key | AWS Access key       |
 | aws_secret_key | AWS Secret key       |
-| region         | Region Name          |
+| aws_region         | AWS Region Name      |
 | dax_cluster_name        | DAX Cluster Name     |
 | node_type        | DAX Cluster Type     |
 | iam_arn        | IAM Role for Cluster |
@@ -56,7 +56,7 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "region": "us-east-1",
+  "aws_region": "us-east-1",
   "dax_cluster_name": "xxx",
   "node_type":"xxx",
   "iam_arn":"xx"

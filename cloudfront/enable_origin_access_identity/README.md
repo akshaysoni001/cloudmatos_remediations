@@ -30,7 +30,6 @@ ansible-galaxy collection install community.aws
 | aws_secret_key  | AWS Secret key             |
 | region          | Region Name                |
 | distribution_id | CloudFront Distribution ID |
-| logging_s3_bucket_name          | S3 Logging Bucket Name     |
 
 
 
@@ -42,6 +41,5 @@ ansible-playbook playbook.yml --extra-vars '{
   "aws_secret_key": "xxxx",
   "region": "us-east-2",
   "distribution_id": "xxx",
-  "logging_s3_bucket_name": "xxx"
 }'
 ```

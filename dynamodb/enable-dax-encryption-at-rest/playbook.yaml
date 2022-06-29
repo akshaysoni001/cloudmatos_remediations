@@ -9,6 +9,7 @@
         that:
           - aws_access_key is defined
           - aws_secret_key is defined
+          - aws_region is defined
           - dax_cluster_name is defined
           - node_type is defined
           - iam_arn is defined
@@ -22,7 +23,7 @@
 
     - name: Encrypt DAX Cluster
       shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws dax create-cluster --cluster-name {{dax_cluster_name}} --node-type {{node_type}} --replication-factor 3 --iam-role-arn {{iam_arn}} --sse-specification Enabled=true --region "{{region}}"
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws dax create-cluster --cluster-name {{dax_cluster_name}} --node-type {{node_type}} --replication-factor 3 --iam-role-arn {{iam_arn}} --sse-specification Enabled=true --region "{{aws_region}}"
       register: dax_cluster
       failed_when: dax_cluster.stderr
     - debug: var=dax_cluster
