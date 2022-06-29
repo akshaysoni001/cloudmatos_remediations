@@ -28,7 +28,7 @@ ansible-galaxy collection install community.aws
 |-----------------|----------------------------|
 | aws_access_key  | AWS Access key             |
 | aws_secret_key  | AWS Secret key             |
-| region          | Region Name                |
+| aws_region          | AWS Region Name            |
 | distribution_id | CloudFront Distribution ID |
 | logging_s3_bucket_name          | S3 Logging Bucket Name     |
 
@@ -40,7 +40,7 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "region": "us-east-2",
+  "aws_region": "us-east-2",
   "distribution_id": "xxx",
   "logging_s3_bucket_name": "xxx"
 }'

@@ -3,6 +3,9 @@
   connection: "local"
   gather_facts: false
 
+  vars:
+    origin_group_configuration: "./files/origin_group_configuration.json"
+
   pre_tasks:
     - name: Validate Input
       assert:
@@ -11,6 +14,8 @@
         - aws_secret_key is defined
         - aws_region is defined
         - distribution_id is defined
+        - origin_id_1 is defined
+        - origin_id_2 is defined
 
   tasks:
     - name: Check ansible version
@@ -19,6 +24,11 @@
       fail:
         msg: Please use Ansible 2.8 or newer
 
+    - name: Create Origin Group Configuration Policy
+      template:
+        src: ./abc.j2
+        dest: "{{origin_group_configuration}}"
+
     - name: Fetch CloudFront distributions Configuration
       shell: >
         AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws cloudfront get-distribution-config --id {{distribution_id}} --query 'DistributionConfig' --region {{ aws_region }} --output json
@@ -26,28 +36,29 @@
       failed_when: cf_configuration.failed
     - debug: var=cf_configuration.stdout
 
-    - name: create an origin access identity
-      community.aws.cloudfront_origin_access_identity:
-        state: present
-        caller_reference: S3OriginAccessIdentity
-        comment: Enable S3 Origin Identity
-      register: s3_origin
-
     - name: Read file directly into fact
       ansible.builtin.set_fact:
         jsondata: "{{ cf_configuration.stdout }}"
     - debug: var=jsondata
 
+    - name: Set a fact
+      ansible.builtin.set_fact:
+        jsondata:
+          items:
+              - "{{ lookup('file', origin_group_configuration) }}"
+      register: testing
+    - debug: var=testing
+
     - name: Update the fact
       ansible.utils.update_fact:
         updates:
-          - path: jsondata.Origins.Items[0].S3OriginConfig.OriginAccessIdentity
-            value: "origin-access-identity/cloudfront/{{s3_origin.cloud_front_origin_access_identity.id}}"
+          - path: jsondata.OriginGroups
+            value: "{{ lookup('file', origin_group_configuration) }}"
       register: updated_configuration
     - debug: var=updated_configuration
 
     - copy: content="{{ updated_configuration.jsondata | to_nice_json }}" dest="files/update_configuration.json"
-
+#
     - name: Get Etag For CloudFront Distribution
       shell: >
         AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws cloudfront get-distribution-config --id {{distribution_id}} --query 'ETag' --region "{{aws_region}}"

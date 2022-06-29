@@ -12,7 +12,7 @@
         that:
         - aws_access_key is defined
         - aws_secret_key is defined
-        - region is defined
+        - aws_region is defined
         - sns_document_file is defined
         - sns_topic is defined
 
@@ -34,6 +34,6 @@
         state: present
         aws_access_key: "{{aws_access_key}}"
         aws_secret_key: "{{aws_secret_key}}"
-        region: "{{region}}"
+        region: "{{aws_region}}"
         display_name: "SNS Public Policy"
         policy: "{{ lookup('file', sns_document_file) }}"

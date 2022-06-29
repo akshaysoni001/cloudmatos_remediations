@@ -1,0 +1,27 @@
+ {
+ "Items": [
+                {
+                    "Id": "cc-cloudconformity.com-origin-group-{{distribution_id}}",
+                    "Members": {
+                        "Items": [
+                            {
+                                "OriginId": "{{origin_id_1}}"
+                            },
+                            {
+                                "OriginId": "{{origin_id_2}}"
+                            }
+                        ],
+                        "Quantity": 2
+                    },
+                    "FailoverCriteria": {
+                        "StatusCodes": {
+                            "Items": [
+                                500
+                            ],
+                            "Quantity": 1
+                        }
+                    }
+                }
+            ],
+            "Quantity": 1
+}

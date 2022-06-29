@@ -9,7 +9,7 @@
         that:
         - aws_access_key is defined
         - aws_secret_key is defined
-        - region is defined
+        - aws_region is defined
         - vpc_id is defined
         - security_group_name is defined
         - security_group_description is defined
@@ -31,7 +31,7 @@
         group_id: "{{security_group_id}}"
         description: "{{ security_group_description }}"
         vpc_id: "{{vpc_id}}"
-        region: "{{region}}"
+        region: "{{aws_region}}"
         aws_secret_key: "{{aws_secret_key}}"
         aws_access_key: "{{aws_access_key}}"
         rules:

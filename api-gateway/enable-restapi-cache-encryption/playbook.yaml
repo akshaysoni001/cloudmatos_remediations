@@ -9,7 +9,7 @@
         that:
         - aws_access_key is defined
         - aws_secret_key is defined
-        - region is defined
+        - aws_region is defined
         - api_id is defined
         - stage_name is defined
 
@@ -22,7 +22,7 @@
 
     - name: Enable REST API Cache encryption at rest
       shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigateway update-stage --rest-api-id {{api_id}} --stage-name '{{stage_name}}' --patch-operations op=replace,path=/'*/*'/caching/dataEncrypted,value=true  --region "{{region}}"
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigateway update-stage --rest-api-id {{api_id}} --stage-name '{{stage_name}}' --patch-operations op=replace,path=/'*/*'/caching/dataEncrypted,value=true  --region "{{aws_region}}"
       register: cache_encryption
       failed_when: cache_encryption.stderr_lines
     - debug: var=cache_encryption

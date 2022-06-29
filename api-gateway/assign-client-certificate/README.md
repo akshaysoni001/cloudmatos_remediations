@@ -28,7 +28,7 @@ ansible-galaxy collection install community.aws
 |----------------|-----------------------|
 | aws_access_key | AWS Access key        |
 | aws_secret_key | AWS Secret key        |
-| region         | Region Name           |
+| aws_region         | AWS Region Name       |
 | api_id         | Rest API Id           |
 | stage_name     | Rest API Stage Name   |
 | certificate_id | Client Certificate Id |
@@ -40,7 +40,7 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "region": "us-east-1",
+  "aws_region": "us-east-1",
   "api_id": "xxx",
   "stage_name":"xx",
   "certificate_id":"xx"

@@ -30,13 +30,13 @@ not supposed to be public then pass these instance id in the ansible command, it
 
 ## Remediation Parameters
 
-| Parameter      | Comments       |
-|----------------|----------------|
-| aws_access_key | AWS Access key |
-| aws_secret_key | AWS Secret key |
-| region         | Region Name    |
+| Parameter      | Comments        |
+|----------------|-----------------|
+| aws_access_key | AWS Access key  |
+| aws_secret_key | AWS Secret key  |
+| aws_region         | AWS Region Name |
 | instance_id    | EC2 Instance Id |
-| subnet_id      | Subnet Id      |
+| subnet_id      | Subnet Id       |
 
 
 ## Remediation Execution
@@ -45,7 +45,7 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "region": "us-east-1",
+  "aws_region": "us-east-1",
   "instance_id": "xxx",
   "subnet_id": "xxx"
 }'

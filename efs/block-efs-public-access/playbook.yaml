@@ -12,6 +12,7 @@
         that:
           - aws_access_key is defined
           - aws_secret_key is defined
+          - aws_region is defined
           - efs_id is defined
           - efs_document_file is defined
 
@@ -31,7 +32,7 @@
 
     - name: Disable EFS Public access
       shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws efs put-file-system-policy --file-system-id {{efs_id}} --policy '{{lookup('file',efs_document_file)}}'
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws efs put-file-system-policy --file-system-id {{efs_id}} --policy '{{lookup('file',efs_document_file)}}' --region "{{aws_region}}"
       register: efs_disable_public
       failed_when: efs_disable_public.stderr
     - debug: var=efs_disable_public

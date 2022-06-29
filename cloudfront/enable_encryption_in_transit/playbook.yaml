@@ -9,7 +9,7 @@
         that:
         - aws_access_key is defined
         - aws_secret_key is defined
-        - region is defined
+        - aws_region is defined
         - distribution_id is defined
 
   tasks:

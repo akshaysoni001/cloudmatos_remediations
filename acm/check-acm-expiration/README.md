@@ -24,11 +24,11 @@ ansible-galaxy collection install community.aws
 
 ## Remediation Parameters
 
-| Parameter      | Comments       |
-|----------------|----------------|
-| aws_access_key | AWS Access key |
-| aws_secret_key | AWS Secret key |
-| region         | Region Name    |
+| Parameter      | Comments        |
+|----------------|-----------------|
+| aws_access_key | AWS Access key  |
+| aws_secret_key | AWS Secret key  |
+| aws_region         | AWS Region Name |
 
 
 ## Remediation Execution
@@ -37,6 +37,6 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "region": "us-east-1",
+  "aws_region": "us-east-1",
 }'
 ```

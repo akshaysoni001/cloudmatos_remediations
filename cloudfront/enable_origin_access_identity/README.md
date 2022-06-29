@@ -1,5 +1,5 @@
-# Remediation - Enable Logging in CloudFront
-CloudFront to create log files that contain detailed information about every user request that CloudFront receives
+# Remediation - Enable Origin Access Identity
+Amazon CloudFront OAI is a simple function of CloudFront distribution that you can enable when you select S3 buckets as origin. If you don’t use an OAI, the S3 bucket must allow public access.
 
 > Remediation Tool   - [Ansible](https://www.ansible.com/)
 
@@ -28,7 +28,7 @@ ansible-galaxy collection install community.aws
 |-----------------|----------------------------|
 | aws_access_key  | AWS Access key             |
 | aws_secret_key  | AWS Secret key             |
-| region          | Region Name                |
+| aws_region      | Region Name                |
 | distribution_id | CloudFront Distribution ID |
 
 
@@ -39,7 +39,7 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "region": "us-east-2",
+  "aws_region": "us-east-2",
   "distribution_id": "xxx",
 }'
 ```

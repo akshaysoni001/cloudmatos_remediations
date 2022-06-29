@@ -8,7 +8,7 @@
         that:
           - aws_access_key is defined
           - aws_secret_key is defined
-          - region is defined
+          - aws_region is defined
   tasks:
     - name: Check ansible version
       when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
@@ -18,7 +18,7 @@
 
     - name: Block EMR Public Access
       shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws emr put-block-public-access-configuration --block-public-access-configuration BlockPublicSecurityGroupRules=true --region {{ region }}
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws emr put-block-public-access-configuration --block-public-access-configuration BlockPublicSecurityGroupRules=true --region {{ aws_region }}
       register: emr_public_access
       failed_when: emr_public_access.stderr_lines
     - debug: var=emr_public_access

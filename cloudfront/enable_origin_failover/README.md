@@ -1,5 +1,8 @@
-# Remediation - Enable Encryption In Transit (CloudFront)
-This control checks whether an Amazon CloudFront distribution requires viewers to use HTTPS directly or whether it uses redirection. The control fails if ViewerProtocolPolicy is set to allow-all for defaultCacheBehavior or for cacheBehaviors.
+# Remediation - CloudFront distributions should have origin failover configured
+This control checks whether an Amazon CloudFront distribution is configured with an origin group that has two or more origins.
+
+CloudFront origin failover can increase availability. Origin failover automatically redirects traffic to a secondary origin if the primary origin is unavailable or if it returns specific HTTP response status codes.
+
 
 > Remediation Tool   - [Ansible](https://www.ansible.com/)
 
@@ -28,8 +31,9 @@ ansible-galaxy collection install community.aws
 |-----------------|----------------------------|
 | aws_access_key  | AWS Access key             |
 | aws_secret_key  | AWS Secret key             |
+| aws_region      | Region Name                |
 | distribution_id | CloudFront Distribution ID |
-| aws_region          | AWS Region Name            |
+
 
 
 ## Remediation Execution

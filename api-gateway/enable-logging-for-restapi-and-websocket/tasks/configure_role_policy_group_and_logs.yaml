@@ -39,7 +39,7 @@
 
 - name: Assign CloudWatch Arn to api gateway
   shell: >
-    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigateway update-account --patch-operations op='replace',path='/cloudwatchRoleArn',value='{{role_resp.arn}}'
+    AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws apigateway update-account --patch-operations op='replace',path='/cloudwatchRoleArn',value='{{role_resp.arn}}' --region {{aws_region}}
   register: cloudwatch_arn_api_gateway
   failed_when: cloudwatch_arn_api_gateway.stderr_lines
 - debug: var=cloudwatch_arn_api_gateway

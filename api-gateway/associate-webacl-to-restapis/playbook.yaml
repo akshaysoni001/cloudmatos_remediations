@@ -4,8 +4,8 @@
   gather_facts: false
 
   vars:
-    restapi_arn: arn:aws:apigateway:{{region}}::/restapis/{{api_id}}/stages/{{stage_name}}
-    web_acl_arn: arn:aws:wafv2:{{region}}:{{aws_account_id}}:regional/webacl/{{web_acl_name}}/{{web_acl_id}}
+    restapi_arn: arn:aws:apigateway:{{aws_region}}::/restapis/{{api_id}}/stages/{{stage_name}}
+    web_acl_arn: arn:aws:wafv2:{{aws_region}}:{{aws_account_id}}:regional/webacl/{{web_acl_name}}/{{web_acl_id}}
 
   pre_tasks:
     - name: Validate Input
@@ -14,7 +14,7 @@
         - aws_account_id is defined
         - aws_access_key is defined
         - aws_secret_key is defined
-        - region is defined
+        - aws_region is defined
         - api_id is defined
         - stage_name is defined
         - web_acl_name is defined
@@ -31,7 +31,7 @@
 
     - name: Associate WebAcl To Rest APIs
       shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws wafv2 associate-web-acl  --web-acl-arn "{{web_acl_arn}}" --resource-arn "{{restapi_arn}}" --region "{{region}}"
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws wafv2 associate-web-acl  --web-acl-arn "{{web_acl_arn}}" --resource-arn "{{restapi_arn}}" --region "{{aws_region}}"
       register: web_acl_association
       failed_when: web_acl_association.stderr_lines
     - debug: var=web_acl_association

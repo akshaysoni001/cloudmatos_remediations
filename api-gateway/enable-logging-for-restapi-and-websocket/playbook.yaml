@@ -17,7 +17,7 @@
         - aws_account_id is defined
         - aws_access_key is defined
         - aws_secret_key is defined
-        - region is defined
+        - aws_region is defined
         - api_id is defined
         - stage_name is defined
         - log_group_name is defined
