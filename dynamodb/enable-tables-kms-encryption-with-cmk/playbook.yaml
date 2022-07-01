@@ -1,0 +1,32 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  vars:
+    kms_key_id: "arn:aws:kms:{{aws_region}}:{{aws_account_id}}:key/{{kms_key}}"
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_account_id is defined
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_region is defined
+          - table_name is defined
+          - kms_key is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: enable tables KMS encryption with CMK
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws dynamodb update-table --table-name {{table_name}} --sse-specification Enabled=true,SSEType="KMS",KMSMasterKeyId="{{kms_key_id}}" --region "{{aws_region}}"
+      register: enable_kms_cmk
+      failed_when: enable_kms_cmk.stderr
+    - debug: var=enable_kms_cmk
+   

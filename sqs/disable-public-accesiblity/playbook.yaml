@@ -1,0 +1,39 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  vars:
+    queue_url: "https://sqs.{{aws_region}}.amazonaws.com/{{aws_account_id}}/{{queue_name}}"
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_account_id is defined
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_region is defined
+          - queue_name is defined
+          - queue_url is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Remove Existing permission - SQS
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws sqs remove-permission --queue-url {{queue_url}} --label __owner_statement --region "{{aws_region}}"
+      register: remove_permissions
+      failed_when: remove_permissions.failed
+    - debug: var=remove_permissions
+
+    - name: Disable Public Access - SQS
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws sqs add-permission --queue-url {{queue_url}} --label __owner_statement --aws-account-ids {{aws_account_id}} --actions "*" --region "{{aws_region}}"
+      register: disable_public_access
+      failed_when: disable_public_access.failed
+    - debug: var=disable_public_access

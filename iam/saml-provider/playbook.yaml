@@ -5,6 +5,7 @@
 
   vars:
     saml_metadata_file: ./files/saml-metadata.xml
+    idp_exists: "True"
 
   pre_tasks:
     - name: Validate Input
@@ -12,6 +13,9 @@
         that:
           - aws_access_key is defined
           - aws_secret_key is defined
+          - role_type is defined
+          - idp_exists is defined
+          - unique_session_name is defined
           - saml_metadata_file is defined
 
   tasks:
@@ -23,9 +27,17 @@
 
     - name: Create SAML Provider that STS Can be used
       community.aws.iam_saml_federation:
-        name: Saml Identity Provider
+        name: Saml_Identity_Provider_{{aws_account_id}}
         saml_metadata_document: "{{ item }}"
       with_file: "{{ saml_metadata_file }}"
+      when: idp_exists is defined and idp_exists == "False"
+
+    - name: Get Temporary Credentials - STS
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws sts assume-role  --role-arn arn:aws:iam::{{aws_account_id}}:role/{{role_type}} --role-session-name {{unique_session_name}} --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" --region "{{aws_region}}"
+      register: temp_credentials
+      failed_when: temp_credentials.failed
+    - debug: var=temp_credentials
 
 
    

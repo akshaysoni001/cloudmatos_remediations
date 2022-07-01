@@ -1,0 +1,33 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  vars:
+    queue_url: "https://sqs.{{aws_region}}.amazonaws.com/{{aws_account_id}}/{{queue_name}}"
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_account_id is defined
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_region is defined
+          - queue_name is defined
+          - queue_url is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Configure Encryption, automatically uses a new data key every hour
+      community.aws.sqs_queue:
+        name: "akshay-test-1"
+        region: "us-east-1"
+        state: present
+      register: data
+    - debug: var=data
