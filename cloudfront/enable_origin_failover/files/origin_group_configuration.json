@@ -1,6 +1,4 @@
- {
- "Items": [
-                {
+{
                     "Id": "cc-cloudconformity.com-origin-group-E299LBKFG9SX1H",
                     "Members": {
                         "Items": [
@@ -22,6 +20,3 @@
                         }
                     }
                 }
-            ],
-            "Quantity": 1
-}

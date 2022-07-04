@@ -1,6 +1,5 @@
 # Remediation - CloudFront distributions should have origin failover configured
 This control checks whether an Amazon CloudFront distribution is configured with an origin group that has two or more origins.
-
 CloudFront origin failover can increase availability. Origin failover automatically redirects traffic to a secondary origin if the primary origin is unavailable or if it returns specific HTTP response status codes.
 
 
@@ -25,6 +24,9 @@ To install it, use:
 ansible-galaxy collection install community.aws
 ```
 
+# Pre-Configuration
+To configure origin fail over, Distribution must have atleast two origin Id.
+
 ## Remediation Parameters
 
 | Parameter       | Comments                   |
@@ -33,6 +35,9 @@ ansible-galaxy collection install community.aws
 | aws_secret_key  | AWS Secret key             |
 | aws_region      | Region Name                |
 | distribution_id | CloudFront Distribution ID |
+| origin_id_1     | Primary Origin ID          |
+| origin_id_2     | Secondary Origin ID        |
+
 
 
 
@@ -42,7 +47,9 @@ Following command need to execute
 ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
-  "aws_region": "us-east-2",
+  "aws_region": "us-east-1",
   "distribution_id": "xxx",
+  "origin_id_1": "xxx",
+  "origin_id_2": "xxx",
 }'
 ```

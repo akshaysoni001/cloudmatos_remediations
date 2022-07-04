@@ -16,6 +16,7 @@
         - distribution_id is defined
         - origin_id_1 is defined
         - origin_id_2 is defined
+        - origin_group_configuration is defined
 
   tasks:
     - name: Check ansible version
@@ -26,7 +27,7 @@
 
     - name: Create Origin Group Configuration Policy
       template:
-        src: ./abc.j2
+        src: ./origin_failover_configuration.j2
         dest: "{{origin_group_configuration}}"
 
     - name: Fetch CloudFront distributions Configuration
@@ -43,17 +44,18 @@
 
     - name: Set a fact
       ansible.builtin.set_fact:
-        jsondata:
-          items:
+        OriginGroupjsondata:
+          Items:
               - "{{ lookup('file', origin_group_configuration) }}"
-      register: testing
-    - debug: var=testing
+          Quantity: 2
+      register: OriginGroupKeyCreations
+    - debug: var=OriginGroupKeyCreations
 
     - name: Update the fact
       ansible.utils.update_fact:
         updates:
           - path: jsondata.OriginGroups
-            value: "{{ lookup('file', origin_group_configuration) }}"
+            value: "{{OriginGroupjsondata}}"
       register: updated_configuration
     - debug: var=updated_configuration
 
