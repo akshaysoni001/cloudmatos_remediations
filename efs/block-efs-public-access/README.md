@@ -36,10 +36,10 @@ ansible-galaxy collection install community.aws
 ## Remediation Execution
 Following command need to execute
 ```sh
-ansible-playbook playbook.yml --extra-vars '{
+ansible-playbook playbook.yaml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
   "aws_region": "us-east-1",
-  "efs_id": "xxx",
+  "efs_id": "fs-0f6f624b5d4991d4c",
 }'
 ```

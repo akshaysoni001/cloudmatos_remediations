@@ -27,6 +27,22 @@ ansible-galaxy collection install community.aws
 # Reference ( Below task are required to do manually by user ( Download saml metadata & create iam role or user) )
 1. How to assume a role using the AWS CLI and STS -> https://www.learnaws.org/2022/02/05/aws-cli-assume-role/
 2. How to get saml metadata from external Identity provier, I use okta as external identity provider -> https://support.okta.com/help/s/question/0D51Y00008vdVyCSAU/how-to-obtain-okta-metadata?language=en_US
+3. User Must have below policy assinged.
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::{{aws_account_id}}:user/{{user}}"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
 
 ## Remediation Parameters
 

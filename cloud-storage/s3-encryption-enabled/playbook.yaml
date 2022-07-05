@@ -5,6 +5,7 @@
 
   vars:
     s3_encryption_file: "./policy/s3_encryption.json"
+    job_configuration: "./policy/job_configuration.json"
     sec_config_name: "s3_encrypted_sec_config"
 
   pre_tasks:
@@ -15,6 +16,9 @@
           - aws_secret_key is defined
           - aws_account_id is defined
           - aws_region is defined
+          - job_name is defined
+          - role_arn is defined
+          - command is defined
           - kms_key is defined
           - s3_encryption_file is defined
           - security_configuration_exists is defined
@@ -32,6 +36,11 @@
         src: ./s3_encryption.j2
         dest: "{{s3_encryption_file}}"
 
+    - name: Create Job Configuration Policy
+      template:
+        src: ./job_configuration.j2
+        dest: "{{ job_configuration }}"
+
     #
     - name: Enable S3 Encryption For Glue Development Endpoints & ETL Jobs
       shell: >
@@ -40,5 +49,16 @@
       when: security_configuration_exists is defined and security_configuration_exists == "False"
       failed_when: security_configuration.failed
     - debug: var=security_configuration.stdout
+
+
+    - name: Update Job Security Configuration
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws glue update-job --cli-input-json file://{{job_configuration}} --region {{ aws_region }}
+      register: update_job
+      failed_when: update_job.failed
+    - debug: var=update_job.stdout
+
+
+
 
    
