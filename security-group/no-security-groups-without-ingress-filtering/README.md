@@ -24,57 +24,32 @@ ansible-galaxy collection install community.aws
 
 ## Remediation Parameters
 
-| Parameter      | Comments        |
-|----------------|-----------------|
-| aws_access_key | AWS Access key  |
-| aws_secret_key | AWS Secret key  |
-| aws_region         | AWS Region Name |
-| sns_topic      | SNS Topic Name  |
+| Parameter      | Comments                   |
+|----------------|----------------------------|
+| aws_access_key | AWS Access key             |
+| aws_secret_key | AWS Secret key             |
+| aws_region         | AWS Region Name            |
+| security_group_name      | Security Group Name        |
+| security_group_description      | Security Group Description |
+| vpc_id      | vpc_id                     |
+| from_port      | Starting Of Port Range     |
+| to_port      | End Port of Port range     |
+| cidr_range      | CIDR Range                 |
 
 
 
 ## Remediation Execution
 Following command need to execute
 ```sh
-ansible-playbook playbook.yml --extra-vars '{
-  "aws_access_key": "xxxx",
-  "aws_secret_key": "xxxx",
+ansible-playbook playbook.yaml --extra-vars '{
+  "aws_access_key": "xxx",
+  "aws_secret_key": "xxx",
   "aws_region": "us-east-1",
+  "security_group_name":"xxx",
+  "security_group_description":"xx",
   "vpc_id":"xxx",
-  "security_group_id":"xx",
-  "from_port":"from_port",
-  "to_port":"XX",
-  "cidr_range":"XX"
+  "from_port":"xx",
+  "to_port":"xx",
+  "cidr_range":"xxx"
 }'
 ```
-
-
-# Introduction
-
-Remediate Prowler Security Group specific compliance using Ansible Playbook
-
-# Features
-
-The main playbook is defined in ./playbook.yaml which essentially calls the different remediation tasks in ./tasks/* folder. Currently, the following remediation's are supported:
-
- * [Prowler.1] Ensure No Security Groups without ingress filtering being used
-
-
-# Usage
- 
- * Update ./inventory.yaml with system specific python location
-    localhost ansible_python_interpreter=<location of python>
-
-Manually update ./vars/variables.yaml.
-    aws_region: <aws_region>
-    vpc_id: <vpc_id>
-    security_group_name: <security_group_name>
-    security_group_description: <security_group_description>
-    security_group_id: <security_group_id>
-    from_port: <from_port>
-    to_port: <to_port>
-    cidr_range: <cidr_range>
-
-Run playbook
-    ansible-playbook playbook.yaml --extra-vars '{"aws_access_key":"<aws_access_key>","aws_secret_key":"<aws_secret_key>"}'
-

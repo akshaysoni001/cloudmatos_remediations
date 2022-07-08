@@ -1,0 +1,58 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  vars:
+    kms_arn: arn:aws:kms:{{aws_region}}:{{aws_account_id}}:key/{{kms_key}}
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_region is defined
+          - cluster_name is defined
+          - instance_name is defined
+          - instance_class is defined
+          - kms_key is defined
+          - kms_arn is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: create snapshot of document db cluster
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws docdb create-db-cluster-snapshot --db-cluster-snapshot-identifier {{cluster_name}}-snapshot --db-cluster-identifier {{cluster_name}} --region "{{aws_region}}"
+      register: create_snapshot
+      failed_when: create_snapshot.stderr
+    - debug: var=create_snapshot
+
+    - name: restore cluster from snapshot & make it encrypted
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws docdb restore-db-cluster-from-snapshot --db-cluster-identifier {{cluster_name}}-encrypted --snapshot-identifier {{cluster_name}}-snapshot --engine docdb --kms-key-id  {{kms_arn}} --region "{{aws_region}}"
+      register: restore_cluster
+      until: restore_cluster.stderr.find("must have state available but actually has creating") == -1
+      retries: 5
+      delay: 130
+      failed_when: restore_cluster.stderr
+    - debug: var=restore_cluster
+
+    - name: Create instance in encrypted cluster
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws docdb create-db-instance --db-instance-identifier {{instance_name}}-encrypted --db-instance-class {{instance_class}}  --engine docdb  --db-cluster-identifier {{cluster_name}}-encrypted --region "{{aws_region}}"
+      register: create_instance
+      failed_when: create_instance.stderr
+    - debug: var=create_instance
+
+    - name: Delete unencrypted cluster
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws docdb delete-db-cluster --db-cluster-identifier {{cluster_name}} --skip-final-snapshot --region "{{aws_region}}"
+      register: delete_cluster
+      failed_when: delete_cluster.stderr
+    - debug: var=delete_cluster

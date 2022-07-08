@@ -40,10 +40,6 @@ ansible-playbook playbook.yml --extra-vars '{
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
   "aws_region": "us-east-1",
-  "job_name":"abc",
-  "role_arn":"xyz",
-  "command":"python"
-  "kms_key": "xxx",
   "security_configuration_exists":"False",
 }'
 ```
