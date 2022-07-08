@@ -29,12 +29,13 @@ ansible-galaxy collection install community.aws
 | aws_access_key | AWS Access key             |
 | aws_secret_key | AWS Secret key             |
 | aws_region         | AWS Region Name            |
-| security_group_name      | Security Group Name        |
-| security_group_description      | Security Group Description |
-| vpc_id      | vpc_id                     |
-| from_port      | Starting Of Port Range     |
-| to_port      | End Port of Port range     |
-| cidr_range      | CIDR Range                 |
+| security_groups      | List of security groups    |
+        | group_name      | Security Group Name        |
+        | group_description      | Security Group Description |
+        | vpc_id      | vpc_id                     |
+        | from_port      | Starting Of Port Range     |
+        | to_port      | End Port of Port range     |
+        | cidr_range      | CIDR Range                 |
 
 
 
@@ -45,11 +46,7 @@ ansible-playbook playbook.yaml --extra-vars '{
   "aws_access_key": "xxx",
   "aws_secret_key": "xxx",
   "aws_region": "us-east-1",
-  "security_group_name":"xxx",
-  "security_group_description":"xx",
-  "vpc_id":"xxx",
-  "from_port":"xx",
-  "to_port":"xx",
-  "cidr_range":"xxx"
+  "security_groups":[{"group_name":"xxx","group_description":"xx","vpc_id":"vpc_id","from_port":"xxx",
+  "to_port":"to_port","cidr_range":"xxx"}]
 }'
 ```

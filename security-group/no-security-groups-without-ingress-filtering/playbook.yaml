@@ -9,12 +9,7 @@
         - aws_access_key is defined
         - aws_secret_key is defined
         - aws_region is defined
-        - vpc_id is defined
-        - security_group_name is defined
-        - security_group_description is defined
-        - from_port is defined
-        - to_port is defined
-        - cidr_range is defined
+        - security_groups is defined
 
   tasks:
     - name: Check ansible version
@@ -25,20 +20,33 @@
 
     - name: No Security Groups without ingress filtering being used
       ec2_group:
-        name: "{{security_group_name}}"
-        description: "{{security_group_description}}"
-        vpc_id: "{{vpc_id}}"
+        name: "{{item.group_name}}"
+        description: "{{item.group_description}}"
+        vpc_id: "{{item.vpc_id}}"
         region: "{{aws_region}}"
         aws_secret_key: "{{aws_secret_key}}"
         aws_access_key: "{{aws_access_key}}"
         rules:
           - proto: tcp
-            from_port: "{{from_port}}"
-            to_port: "{{to_port}}"
-            cidr_ip: "{{cidr_range}}"
+            from_port: "{{item.from_port}}"
+            to_port: "{{item.to_port}}"
+            cidr_ip: "{{item.cidr_range}}"
         rules_egress:
           - proto: tcp
-            from_port: "{{from_port}}"
-            to_port: "{{to_port}}"
-            cidr_ip: "{{cidr_range}}"
+            from_port: "{{item.from_port}}"
+            to_port: "{{item.to_port}}"
+            cidr_ip: "{{item.cidr_range}}"
+        purge_rules: no
+        purge_rules_egress: no
+      with_items:
+        - "{{security_groups}}"
       register: sg_ingress_logfile_validation
+
+    - name: Delete all rules which allow access from everywhere
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}"  aws ec2 revoke-security-group-ingress --group-name "{{item.group_name}}" --ip-permissions '[{"IpProtocol": "-1", "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]' --region "{{aws_region}}"
+      with_items:
+        - "{{security_groups}}"
+      register: remove_public_access
+      failed_when: remove_public_access.failed
+    - debug: var=remove_public_access
