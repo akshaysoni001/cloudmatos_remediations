@@ -1,0 +1,30 @@
+---
+- hosts: "localhost"
+  connection: "local"
+  gather_facts: false
+
+  pre_tasks:
+    - name: Validate Input
+      assert:
+        that:
+          - aws_access_key is defined
+          - aws_secret_key is defined
+          - aws_region is defined
+          - cluster_name is defined
+          - instance_name is defined
+          - instance_class is defined
+
+  tasks:
+    - name: Check ansible version
+      when: (ansible_version.major == 2 and ansible_version.minor < 8 ) or (ansible_version.major < 2)
+      run_once: yes
+      fail:
+        msg: Please use Ansible 2.8 or newer
+
+    - name: Enable MultiAZ By Adding instance to cluster (Replica Instance)
+      shell: >
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws docdb create-db-instance --db-instance-identifier {{instance_name}} --db-instance-class {{instance_class}}  --engine docdb  --db-cluster-identifier {{cluster_name}} --region "{{aws_region}}"
+      register: enable_multiaz
+      failed_when: enable_multiaz.stderr
+    - debug: var=enable_multiaz
+   

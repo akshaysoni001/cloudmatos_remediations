@@ -24,18 +24,19 @@ ansible-galaxy collection install community.aws
 
 ## Remediation Parameters
 
-| Parameter      | Comments                   |
-|----------------|----------------------------|
-| aws_access_key | AWS Access key             |
-| aws_secret_key | AWS Secret key             |
-| aws_region         | AWS Region Name            |
-| security_groups      | List of security groups    |
-        | group_name      | Security Group Name        |
-        | group_description      | Security Group Description |
-        | vpc_id      | vpc_id                     |
-        | from_port      | Starting Of Port Range     |
-        | to_port      | End Port of Port range     |
-        | cidr_range      | CIDR Range                 |
+| Parameter | Comments                                 |
+|---------|------------------------------------------|
+| aws_access_key | AWS Access key                           |
+| aws_secret_key | AWS Secret key                           |
+| aws_region | AWS Region Name                          |
+| new_cidr_ip        | CIDR Ip Type : Valid Values ( ipv4/ipv6) |
+| security_groups | List of security groups                  |
+        | group_name | Security Group Name                      |
+        | group_description | Security Group Description               |
+        | vpc_id  | vpc_id                                   |
+        | from_port | Starting Of Port Range                   |
+        | to_port | End Port of Port range                   |
+        | cidr_range | CIDR Range                               |
 
 
 
@@ -46,6 +47,7 @@ ansible-playbook playbook.yaml --extra-vars '{
   "aws_access_key": "xxx",
   "aws_secret_key": "xxx",
   "aws_region": "us-east-1",
+  "new_cidr_ip":"ipv4"
   "security_groups":[{"group_name":"xxx","group_description":"xx","vpc_id":"vpc_id","from_port":"xxx",
   "to_port":"to_port","cidr_range":"xxx"}]
 }'
