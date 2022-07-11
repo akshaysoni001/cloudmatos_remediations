@@ -14,8 +14,8 @@
         - aws_secret_key is defined
         - aws_region is defined
         - distribution_id is defined
-        - origin_id_1 is defined
-        - origin_id_2 is defined
+        - primary_origin_id is defined
+        - secondary_origin_id is defined
         - origin_group_configuration is defined
 
   tasks:

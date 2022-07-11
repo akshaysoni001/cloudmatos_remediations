@@ -5,6 +5,7 @@
 
   vars:
     kms_key_id: "arn:aws:kms:{{aws_region}}:{{aws_account_id}}:key/{{kms_key}}"
+
   pre_tasks:
     - name: Validate Input
       assert:

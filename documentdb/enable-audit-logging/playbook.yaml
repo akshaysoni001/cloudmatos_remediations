@@ -19,7 +19,7 @@
       fail:
         msg: Please use Ansible 2.8 or newer
 
-    - name: Enable Audit Login
+    - name: Enable Audit Logging
       shell: >
         AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}" aws docdb modify-db-cluster --db-cluster-identifier "{{cluster_name}}" --cloudwatch-logs-export-configuration '{"EnableLogTypes":["audit"]}' --region "{{aws_region}}"
       register: enable_audit

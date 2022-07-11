@@ -26,9 +26,10 @@ ansible-galaxy collection install community.aws
 
 | Parameter                     | Comments                       |
 |-------------------------------|--------------------------------|
+| aws_account_id                | AWS Account Id                 |
 | aws_access_key                | AWS Access key                 |
 | aws_secret_key                | AWS Secret key                 |
-| aws_region                        | AWS  Region Name               |
+| aws_region                    | AWS  Region Name               |
 | kms_key                       | KMS Encryption key             |
 | security_configuration_exists | Boolean(True if exist ! False) |
 
@@ -37,6 +38,7 @@ ansible-galaxy collection install community.aws
 Following command need to execute
 ```sh
 ansible-playbook playbook.yml --extra-vars '{
+  "aws_account_id": "xxxx",
   "aws_access_key": "xxxx",
   "aws_secret_key": "xxxx",
   "aws_region": "us-east-1",

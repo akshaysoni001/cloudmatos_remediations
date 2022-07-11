@@ -22,6 +22,9 @@ To install it, use:
 ```sh
 ansible-galaxy collection install community.aws
 ```
+## Pre-Requisite
+1. WAF ACL Certificate should be present. Provide it's name & id in ansible command.
+
 
 ## Remediation Parameters
 

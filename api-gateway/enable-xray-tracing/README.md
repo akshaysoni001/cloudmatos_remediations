@@ -23,6 +23,9 @@ To install it, use:
 ansible-galaxy collection install community.aws
 ```
 
+## Note:
+This remediaion script automatically fetch swagger.json file from api_id & stage name, later it will be used to enable x-ray tracing.
+
 ## Remediation Parameters
 
 | Parameter      | Comments            |
@@ -45,6 +48,3 @@ ansible-playbook playbook.yml --extra-vars '{
   "stage_name":"xx",
 }'
 ```
-
-## Note:
-This remediaion script automatically fetch swagger.json file from api_id & stage name, later it will be used to enable x-ray tracing.

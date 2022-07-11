@@ -29,14 +29,14 @@ To configure origin fail over, Distribution must have atleast two origin Id.
 
 ## Remediation Parameters
 
-| Parameter       | Comments                   |
-|-----------------|----------------------------|
-| aws_access_key  | AWS Access key             |
-| aws_secret_key  | AWS Secret key             |
-| aws_region      | Region Name                |
-| distribution_id | CloudFront Distribution ID |
-| origin_id_1     | Primary Origin ID          |
-| origin_id_2     | Secondary Origin ID        |
+| Parameter           | Comments                   |
+|---------------------|----------------------------|
+| aws_access_key      | AWS Access key             |
+| aws_secret_key      | AWS Secret key             |
+| aws_region          | Region Name                |
+| distribution_id     | CloudFront Distribution ID |
+| primary_origin_id   | Primary Origin ID          |
+| secondary_origin_id | Secondary Origin ID        |
 
 
 
@@ -49,7 +49,7 @@ ansible-playbook playbook.yml --extra-vars '{
   "aws_secret_key": "xxxx",
   "aws_region": "us-east-1",
   "distribution_id": "xxx",
-  "origin_id_1": "xxx",
-  "origin_id_2": "xxx",
+  "primary_origin_id": "xxx",
+  "secondary_origin_id": "xxx",
 }'
 ```
