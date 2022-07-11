@@ -1,0 +1,10 @@
+{
+  "BackupPlanId":"{{backup_plan_id}}",
+  "BackupSelection":{
+    "SelectionName":"DynamoDb_table_backup_plan",
+    "IamRoleArn":"arn:aws:iam::{{aws_account_id}}:role/{{iam_role_name}}",
+    "Resources":[
+      "arn:aws:dynamodb:*:*:table/*"
+    ]
+  }
+}
