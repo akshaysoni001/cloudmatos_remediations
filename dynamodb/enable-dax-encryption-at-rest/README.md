@@ -35,7 +35,7 @@ ansible-galaxy collection install community.aws
 | iam_arn        | IAM Role for Cluster |
 
 
-# Create Prerequistic
+# Create Prerequisite
 ## To create IAM Role for DAX Cluster
 -   step 1. Go to IAM Console and select ROLES
 -   step 2. click on create role

@@ -30,7 +30,6 @@ ansible-galaxy collection install community.aws
 | aws_access_key  | AWS Access key                           |
 | aws_secret_key  | AWS Secret key                           |
 | aws_region      | AWS Region Name                          |
-| cidr_ip_type    | CIDR Ip Type : Valid Values ( ipv4/ipv6) |
 | security_groups | List of security groups                  |
         | GroupName       | Security Group Name                      |
         | FromPort        | From Port     (Integer)                  |
@@ -47,7 +46,6 @@ Following command need to execute
   "aws_access_key": "xxx",
   "aws_secret_key": "xxxx",
   "aws_region": "us-east-1",
-  "cidr_ip_type":"ipv6",
   "security_groups":[{"GroupName":"akshay-testing","FromPort":0,"ToPort":65535,"IpProtocol":"TCP", "IpRanges":[{"CidrIp":"::/0"}]}]
 }'
 ```

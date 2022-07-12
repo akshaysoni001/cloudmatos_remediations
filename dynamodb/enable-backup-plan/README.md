@@ -21,7 +21,7 @@ To install it, use:
 ansible-galaxy collection install community.aws
 ```
 
-## Pre-Requistic
+## Pre-Requisite
 1. Backup plan should already be created and pass its backup_plan_id.
 2. need to create iam role, which has access to perform backup & restore operation of aws resources
 
