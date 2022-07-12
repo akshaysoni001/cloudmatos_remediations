@@ -33,15 +33,6 @@
           - aws_account_id is defined
           - aws_region is defined
           - unauthorized_api_metric_filter_alarm_exists is defined
-          - config_configuration_changes_metric_filter_alarm_exists is defined
-          - aws_organization_changes_filter_exists is defined
-          - cloudtrail_configuration_changes_metric_filter_alarm_exists is defined
-          - delete_kms_activity_metric_filter_alarm_exists is defined
-          - iam_policy_changes_metric_filter_alarm_exists is defined
-          - console_sign_failure_metric_filter_alarm_exists is defined
-          - root_account_signin_usage_metric_filter_alarm_exists is defined
-          - s3_bucket_policy_change_metric_filter_alarm_exists is defined
-          - signin_without_mfa_metric_filter_alarm_exists is defined
 
   tasks:
     - name: Check ansible version
@@ -56,13 +47,4 @@
       loop:
         - ./tasks/create_prerequisite_configuration.yaml
         - ./tasks/unauthorized_api_alert.yaml
-        - ./tasks/aws_config_configuration_change_alert.yaml
-        - ./tasks/aws_organization_change_alert.yaml
-        - ./tasks/aws_cloudtrail_configuration_change_alert.yaml
-        - ./tasks/disable_delete_kms_key_alert.yaml
-        - ./tasks/aws_iam_policy_changes_alert.yaml
-        - ./tasks/management_console_auth_failure_alert.yaml
-        - ./tasks/root_account_usage_alert.yaml
-        - ./tasks/aws_s3_bucket_policy_change_alert.yaml
-        - ./tasks/aws_sign_in_without_mfa_alert.yaml
    

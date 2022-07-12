@@ -10,7 +10,7 @@
         - aws_secret_key is defined
         - aws_region is defined
         - security_groups is defined
-        - new_cidr_ip is defined
+        - cidr_ip_type is defined
 
   tasks:
     - name: Check ansible version
@@ -19,49 +19,10 @@
       fail:
         msg: Please use Ansible 2.8 or newer
 
-    - name: No Security Groups without ingress filtering being used For CIDR ipv4
-      ec2_group:
-        name: "{{item.group_name}}"
-        description: "{{item.group_description}}"
-        vpc_id: "{{item.vpc_id}}"
-        region: "{{aws_region}}"
-        aws_secret_key: "{{aws_secret_key}}"
-        aws_access_key: "{{aws_access_key}}"
-        rules:
-          - proto: tcp
-            from_port: "{{item.from_port}}"
-            to_port: "{{item.to_port}}"
-            cidr_ip: "{{item.cidr_range}}"
-        purge_rules: no
-        purge_rules_egress: no
-      with_items:
-        - "{{security_groups}}"
-      register: sg_ingress_logfile_validation
-      when: new_cidr_ip == "ipv4"
-
-    - name: No Security Groups without ingress filtering being used For CIDR ipv6
-      ec2_group:
-        name: "{{item.group_name}}"
-        description: "{{item.group_description}}"
-        vpc_id: "{{item.vpc_id}}"
-        region: "{{aws_region}}"
-        aws_secret_key: "{{aws_secret_key}}"
-        aws_access_key: "{{aws_access_key}}"
-        rules:
-          - proto: tcp
-            from_port: "{{item.from_port}}"
-            to_port: "{{item.to_port}}"
-            cidr_ipv6: "{{item.cidr_range}}"
-        purge_rules: no
-        purge_rules_egress: no
-      with_items:
-        - "{{security_groups}}"
-      register: sg_ingress_logfile_validation
-      when: new_cidr_ip == "ipv6"
-
-    - name: Delete all rules which allow access from everywhere
+    - name: Delete all rules which allow access from everywhere (ipv4)
+      when: cidr_ip_type == "ipv4"
       shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}"  aws ec2 revoke-security-group-ingress --group-name "{{item.group_name}}" --ip-permissions '[{"IpProtocol": "-1", "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]' --region "{{aws_region}}"
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}"  aws ec2 revoke-security-group-ingress --group-name {{item.GroupName}} --ip-permissions FromPort={{item.FromPort}},ToPort={{item.ToPort}},IpProtocol={{item.IpProtocol}},IpRanges=[{CidrIp={{item.IpRanges[0].CidrIp}}}] --region "{{aws_region}}"
       with_items:
         - "{{security_groups}}"
       register: remove_public_access_ipv4
@@ -69,8 +30,9 @@
     - debug: var=remove_public_access_ipv4
 
     - name: Delete all rules which allow access from everywhere (ipv6)
+      when: cidr_ip_type == "ipv6"
       shell: >
-        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}"  aws ec2 revoke-security-group-ingress --group-name "{{item.group_name}}" --ip-permissions '[{"IpProtocol": "-1", "Ipv6Ranges": [{"CidrIpv6": "::/0"}]}]' --region "{{aws_region}}"
+        AWS_ACCESS_KEY_ID="{{aws_access_key}}" AWS_SECRET_ACCESS_KEY="{{ aws_secret_key }}"  aws ec2 revoke-security-group-ingress --group-name {{item.GroupName}} --ip-permissions FromPort={{item.FromPort}},ToPort={{item.ToPort}},IpProtocol={{item.IpProtocol}},Ipv6Ranges=[{CidrIpv6={{item.IpRanges[0].CidrIp}}}] --region "{{aws_region}}"
       with_items:
         - "{{security_groups}}"
       register: remove_public_access_ipv6

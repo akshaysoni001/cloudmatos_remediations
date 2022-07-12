@@ -1,6 +1,7 @@
 # Remediation - Ensure No Security Groups without ingress filtering being used
 Ensure there are no Security Groups without ingress filtering being used. Security groups provide stateful filtering of ingress/egress network traffic to AWS resources. It is recommended that no security group allows unrestricted ingress access.
 
+Remediation remove all the rules that you passed in this ansible command from security group
 > Remediation Tool   - [Ansible](https://www.ansible.com/)
 
 > Remediation Script - [playbook.yml](playbook.yml)
@@ -24,31 +25,29 @@ ansible-galaxy collection install community.aws
 
 ## Remediation Parameters
 
-| Parameter | Comments                                 |
-|---------|------------------------------------------|
-| aws_access_key | AWS Access key                           |
-| aws_secret_key | AWS Secret key                           |
-| aws_region | AWS Region Name                          |
-| new_cidr_ip        | CIDR Ip Type : Valid Values ( ipv4/ipv6) |
+| Parameter       | Comments                                 |
+|-----------------|------------------------------------------|
+| aws_access_key  | AWS Access key                           |
+| aws_secret_key  | AWS Secret key                           |
+| aws_region      | AWS Region Name                          |
+| cidr_ip_type    | CIDR Ip Type : Valid Values ( ipv4/ipv6) |
 | security_groups | List of security groups                  |
-        | group_name | Security Group Name                      |
-        | group_description | Security Group Description               |
-        | vpc_id  | vpc_id                                   |
-        | from_port | Starting Of Port Range                   |
-        | to_port | End Port of Port range                   |
-        | cidr_range | CIDR Range                               |
+        | GroupName       | Security Group Name                      |
+        | FromPort        | From Port     (Integer)                  |
+        | ToPort          | To Port            (Integer)             |
+        | IpProtocol      | Ip Protocoals                            |
+        | IpRanges.CidrIp       | Cidr Range                               |
 
 
 
 ## Remediation Execution
 Following command need to execute
 ```sh
-ansible-playbook playbook.yaml --extra-vars '{
+  ansible-playbook playbook.yaml --extra-vars '{
   "aws_access_key": "xxx",
-  "aws_secret_key": "xxx",
+  "aws_secret_key": "xxxx",
   "aws_region": "us-east-1",
-  "new_cidr_ip":"ipv4"
-  "security_groups":[{"group_name":"xxx","group_description":"xx","vpc_id":"vpc_id","from_port":"xxx",
-  "to_port":"to_port","cidr_range":"xxx"}]
+  "cidr_ip_type":"ipv6",
+  "security_groups":[{"GroupName":"akshay-testing","FromPort":0,"ToPort":65535,"IpProtocol":"TCP", "IpRanges":[{"CidrIp":"::/0"}]}]
 }'
 ```

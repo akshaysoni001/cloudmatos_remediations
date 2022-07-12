@@ -1,0 +1,68 @@
+- name: Cloud trail log group role
+  template:
+    src: ./policy_document.j2
+    dest: "{{policy_document_file}}"
+
+- name: s3 bucket permission for trail to push logs
+  template:
+    src: ./bucket_policy.j2
+    dest: "{{bucket_policy_file}}"
+
+- name: Create log group
+  no_log: true
+  community.aws.cloudwatchlogs_log_group:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{aws_region}}"
+    log_group_name: "{{log_group_name}}"
+    state: present
+  register: log_group_resp
+
+- name: Create cloud trail log group role
+  no_log: true
+  community.aws.iam_managed_policy:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    policy_name: "{{policy_name}}"
+    policy_description: "To cloudtrail trail to push logs to cloudwatch"
+    policy: "{{ lookup('file', policy_document_file) }}"
+    state: present
+  register: policy_resp
+
+- name: Create role
+  no_log: true
+  community.aws.iam_role:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    name: "{{role_name}}"
+    assume_role_policy_document: "{{lookup('file',assume_policy_document_file)}}"
+    managed_policies:
+      - "{{policy_resp.policy.arn}}"
+    state: present
+  register: role_resp
+
+- name: Create s3 bucket for log trail
+  no_log: true
+  amazon.aws.s3_bucket:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    name: "{{s3_bucket_name}}"
+    policy: "{{ lookup('file',bucket_policy_file) }}"
+    state: present
+
+- name: Pause to wait for log group to create
+  pause:
+    seconds: 5
+
+- name: Create trail
+  no_log: true
+  community.aws.cloudtrail:
+    aws_access_key: "{{aws_access_key}}"
+    aws_secret_key: "{{aws_secret_key}}"
+    region: "{{aws_region}}"
+    name: "{{trail_name}}"
+    is_multi_region_trail: yes
+    cloudwatch_logs_log_group_arn : "{{log_group_resp.arn}}"
+    cloudwatch_logs_role_arn: "{{role_resp.arn}}"
+    s3_bucket_name: "{{s3_bucket_name}}"
+    state: present
